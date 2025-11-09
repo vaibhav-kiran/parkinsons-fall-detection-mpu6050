@@ -85,7 +85,7 @@ The system consists of **three main components**:
 
 ---
 
-## ⚡ How to Run the Project
+## How to Run the Project
 
 Clone the repository
 
