@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parkinson's Fall Detection System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+      padding-top: 100px;
+      color: #ffffff;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #5568d3 0%, #6a3d8f 100%);
+      width: 100%;
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      color: #ffffff;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 15px;
+      margin: 6px 0 0 0;
+    }
+
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 18px;
+    }
+
+    .status-card {
+      background: rgba(30, 30, 50, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .status-card.fall-detected {
+      background: rgba(245, 101, 101, 0.3);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 2px solid rgba(245, 101, 101, 0.6);
+      animation: pulse 2s infinite;
+      box-shadow: 0 8px 32px rgba(245, 101, 101, 0.4);
+    }
+
+    .status-card.stable {
+      background: rgba(56, 178, 172, 0.3);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 2px solid rgba(56, 178, 172, 0.6);
+      box-shadow: 0 8px 32px rgba(56, 178, 172, 0.3);
+    }
+
+    .status-card.waiting {
+      background: rgba(30, 30, 50, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .status-icon {
+      font-size: 70px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .status-text {
+      font-size: 38px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .status-text.fall {
+      color: #ffcccc;
+      text-shadow: 0 2px 10px rgba(245, 101, 101, 0.5);
+    }
+
+    .status-text.stable {
+      color: #b2f5ea;
+      text-shadow: 0 2px 10px rgba(56, 178, 172, 0.5);
+    }
+
+    .status-text.waiting {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .probability {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 10px;
+    }
+
+    .probability-value {
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .sensor-card {
+      background: rgba(30, 30, 50, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .sensor-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .sensor-label {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .sensor-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .sensor-unit {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-left: 8px;
+    }
+
+    .info-card {
+      background: rgba(30, 30, 50, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .info-card h3 {
+      font-size: 18px;
+      color: #ffffff;
+      margin-bottom: 14px;
+      font-weight: 600;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .info-card p {
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .timestamp {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .status-text {
+        font-size: 32px;
+      }
+
+      .sensor-value {
+        font-size: 28px;
+      }
+
+      .sensor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>Parkinson's Fall Detection System</h1>
+    <p>AI-Powered Real-Time Monitoring & Alert System</p>
+  </div>
+
+  <div class="dashboard">
+    <!-- Status Card -->
+    <div class="status-card waiting" id="statusCard">
+      <span class="status-icon" id="statusIcon">⏳</span>
+      <div class="status-text waiting" id="statusText">WAITING FOR DATA</div>
+      <div class="probability">
+        Fall Probability: <span class="probability-value" id="prob">-</span>
+      </div>
+    </div>
+
+    <!-- Sensor Readings Grid -->
+    <div class="sensor-grid">
+      <div class="sensor-card">
+        <div class="sensor-label">Acceleration X-Axis</div>
+        <div class="sensor-value">
+          <span id="accx">0.00</span><span class="sensor-unit">g</span>
+        </div>
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-label">Acceleration Y-Axis</div>
+        <div class="sensor-value">
+          <span id="accy">0.00</span><span class="sensor-unit">g</span>
+        </div>
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-label">Acceleration Z-Axis</div>
+        <div class="sensor-value">
+          <span id="accz">0.00</span><span class="sensor-unit">g</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Card -->
+    <div class="info-card">
+      <h3>System Information</h3>
+      <p>
+        This system uses advanced machine learning (Random Forest) to analyze accelerometer data 
+        in real-time and detect potential falls. The model has been trained on comprehensive 
+        movement patterns to provide accurate fall detection for Parkinson's patients.
+      </p>
+      <p style="margin-top: 12px;">
+        <strong>Status Indicators:</strong> The system continuously monitors movement patterns. 
+        A <span style="color: #ffcccc; font-weight: 600; text-shadow: 0 2px 10px rgba(245, 101, 101, 0.5);">FALL DETECTED</span> alert indicates 
+        immediate attention may be required, while <span style="color: #b2f5ea; font-weight: 600; text-shadow: 0 2px 10px rgba(56, 178, 172, 0.5);">STABLE</span> 
+        indicates normal movement patterns.
+      </p>
+    </div>
+
+    <div class="timestamp">
+      Last updated: <span id="timestamp">-</span>
+    </div>
+  </div>
+
+  <script>
+    async function updateData() {
+      try {
+        const res = await fetch('/latest');
+        const data = await res.json();
+        
+        // Update sensor values
+        document.getElementById('accx').textContent = data.acc_x.toFixed(2);
+        document.getElementById('accy').textContent = data.acc_y.toFixed(2);
+        document.getElementById('accz').textContent = data.acc_z.toFixed(2);
+        
+        // Update probability
+        const probEl = document.getElementById('prob');
+        if (data.prob_fall !== null && data.prob_fall !== undefined) {
+          probEl.textContent = (data.prob_fall * 100).toFixed(1) + '%';
+        } else {
+          probEl.textContent = '-';
+        }
+        
+        // Update status
+        const statusCard = document.getElementById('statusCard');
+        const statusText = document.getElementById('statusText');
+        const statusIcon = document.getElementById('statusIcon');
+        
+        if (data.label === 'fall') {
+          statusCard.className = 'status-card fall-detected';
+          statusText.className = 'status-text fall';
+          statusText.textContent = '⚠️ FALL DETECTED';
+          statusIcon.textContent = '🚨';
+        } else if (data.label === 'stable') {
+          statusCard.className = 'status-card stable';
+          statusText.className = 'status-text stable';
+          statusText.textContent = '✓ STABLE';
+          statusIcon.textContent = '✅';
+        } else {
+          statusCard.className = 'status-card waiting';
+          statusText.className = 'status-text waiting';
+          statusText.textContent = 'WAITING FOR DATA';
+          statusIcon.textContent = '⏳';
+        }
+        
+        // Update timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleTimeString();
+        
+      } catch (err) {
+        console.error("Failed to fetch data", err);
+      }
+    }
+    
+    // Update every 2 seconds
+    setInterval(updateData, 2000);
+    
+    // Initial load
+    updateData();
+  </script>
+</body>
+</html>
