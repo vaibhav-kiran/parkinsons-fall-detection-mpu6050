@@ -42,15 +42,6 @@ The system consists of **three main components**:
 
 ---
 
-## 🧩 Working Flow
-
-+-------------+ USB Serial +-----------------+ HTTP (POST) +----------------------+
-| MPU6050 + | ---> Arduino Uno ---> | serial_to_flask | ---> Flask Web Server | Random Forest Model |
-| Gyroscope | | (Python) | | + Dashboard Display |
-+-------------+ +-----------------+ +----------------------+
-
----
-
 ## 💡 Features
 
 ✅ Real-time motion sensing  
