@@ -1,1 +1,7 @@
 models/
+models/fall_detection_rf_model.pkl
+
+__pycache__/
+*.pyc
+.DS_Store
+.env
