@@ -1,11 +1,11 @@
-# 🧠 Parkinson's Fall Detection Using MPU6050
+# Parkinson's Fall Detection Using MPU6050
 
 A machine learning–based fall detection system designed to assist Parkinson’s patients by continuously monitoring body motion using the **MPU6050 accelerometer and gyroscope sensor**.  
 The system detects abnormal motion patterns and predicts whether a **fall has occurred or is likely to occur** using a trained **Random Forest Classifier**.
 
 ---
 
-## 🚀 Project Overview
+## Project Overview
 
 This project uses real-time sensor data from an **MPU6050** connected to an **Arduino Uno**, which streams acceleration and gyroscope readings to a **Flask web application**.  
 The Flask app hosts a trained ML model that predicts whether the patient is _stable_ or _falling_ and displays live updates on a web dashboard.  
@@ -13,17 +13,17 @@ The goal is to create a **low-cost, real-time fall detection system** for Parkin
 
 ---
 
-## ⚙️ System Architecture
+## System Architecture
 
 The system consists of **three main components**:
 
-### 1️⃣ Data Acquisition Layer
+### 1️ Data Acquisition Layer
 
 - **Hardware:** Arduino Uno + MPU6050 sensor
 - **Function:** Continuously measures body motion through 3-axis acceleration and gyroscope data.
 - **Communication:** Sends serial data to the connected PC via USB.
 
-### 2️⃣ Data Processing Layer
+### 2️ Data Processing Layer
 
 - **Software:** Python script (`serial_to_flask.py`)
 - **Function:**
@@ -31,7 +31,7 @@ The system consists of **three main components**:
   - Formats it into JSON
   - Sends it to the Flask server endpoint (`/predict`) every few seconds
 
-### 3️⃣ Machine Learning & Web Interface Layer
+### 3️ Machine Learning & Web Interface Layer
 
 - **Software:** Flask web app (`app.py`)
 - **Function:**
@@ -42,17 +42,17 @@ The system consists of **three main components**:
 
 ---
 
-## 💡 Features
+## Features
 
-✅ Real-time motion sensing  
-✅ Machine learning–based fall prediction  
-✅ Web-based live visualization  
-✅ Low-cost and easy-to-build prototype  
-✅ Scalable to include cloud data storage or IoT alerts (SMS/email)
+- Real-time motion sensing  
+- Machine learning–based fall prediction  
+- Web-based live visualization  
+- Low-cost and easy-to-build prototype  
+- Scalable to include cloud data storage or IoT alerts (SMS/email)
 
 ---
 
-## 🧠 Machine Learning Model
+## Machine Learning Model
 
 - **Algorithm:** Random Forest Classifier
 - **Training Data:** Accelerometer readings representing stable and fall conditions
@@ -65,16 +65,16 @@ The system consists of **three main components**:
 
 ---
 
-## 🧰 Hardware & Software Requirements
+## Hardware & Software Requirements
 
-### 🔧 Hardware
+### Hardware
 
 - Arduino Uno
 - MPU6050 Sensor
 - USB Cable
 - Jumper Wires
 
-### 💻 Software
+### Software
 
 - Python 3.8+
 - Flask
@@ -87,7 +87,7 @@ The system consists of **three main components**:
 
 ## ⚡ How to Run the Project
 
-1️⃣ Clone the repository
+Clone the repository
 
 ```bash
 git clone https://github.com/vaibhav-kiran/parkinsons-fall-detection-using-mpu6050.git
