@@ -1,7 +1,11 @@
+# Ignore model files
 models/
-models/fall_detection_rf_model.pkl
+models/*.pkl
 
+# Ignore Python cache
 __pycache__/
 *.pyc
+
+# Ignore macOS and environment files
 .DS_Store
 .env
